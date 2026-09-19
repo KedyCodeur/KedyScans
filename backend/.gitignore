@@ -1,3 +1,4 @@
 .env
 help.txt
 mongoose.txt
+node_modules
