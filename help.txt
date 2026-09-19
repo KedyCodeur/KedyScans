@@ -1,0 +1,30 @@
+:root {
+  /* Marka & Vurgu */
+  --kedy-orange-primary: #ed9121;
+  --kedy-orange-bright:  #ffa834;
+  --kedy-orange-deep:    #c26700;
+  
+  /* Arka Plan & Mürekkep */
+  --kedy-bg-obsidian:    #141416; /genel olan
+  --kedy-ink-dark:       #0b0b0c;
+  --kedy-charcoal:       #242429;
+  
+  /* Eskiz & Açık Tonlar */
+  --kedy-sketch-light:   #d9d9df;
+  --kedy-sketch-mid:     #787882;
+  --kedy-glow-white:     #ffffff;
+}
+
+Editor font 
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+
+    font-family: "Cutive Mono", monospace;
+    font-weight: 400;
+    font-style: normal;
+
+
+rgba(245, 245, 245, 0.774); whiteText
+
+background-color:#333; input black

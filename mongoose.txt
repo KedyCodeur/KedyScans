@@ -1,0 +1,285 @@
+how to create a connection ? 
+
+
+const mongoose = require("mongoose");
+
+const startConnection = async () => {
+
+    try{
+
+        await mongoose.connect(process.env.MONGO_URI)
+
+    }catch(err){
+        console.log(err)
+    }
+}
+
+
+schemas -> tables 
+
+const MangasSchema = new mongoose.Shema({
+    title : String Required ,  // required pour qu'il ne soit jamais vide 
+    lastChapter : {type : Number , default 0},
+    
+})
+
+en mongoose la creation des tables sont fait par nous meme pas eux . ça veut dire tout se passe sur notre NODE JS  les connards ne veulent pas utiliser leur ram pour nous donc 
+creation des shemas  validation controles des données se passent sur notre serveur ce qu'ils font c de juste verifier qu'on changer pas la table (schema) sans supprimer les autres donné donc du moment qu'on crée pas un atre table avec le meme nom ils se foutent de nous :D 
+
+
+comment créer un schema
+
+c comme creer un class apres tu creer des objects dedans 
+
+-> 
+
+const mangasSchema = new mongoose.Schema({
+    title : {type : String , required : [true , "title cant be empty"] , unique : [true , "title already exist"] } ,
+    lastChapter : Number ,
+    description : String
+})
+
+module.exports = mongoose.model("Manga",mangasSchema);
+
+apres tu fait quoi ? 
+
+ca c pour qu'il soit organisé normalement pas besoin de les separer 
+
+donc 
+
+
+const mangaShema =  require("./schemas/mangaShema");
+
+const Noblesse = {title : "Noblesse", lastChapter : 501 , description : "one day a vampire lord..."};
+
+const saveManga = async (manga){
+    try{
+         await mangasSchema.create(manga) 
+    }catch(err){
+        console.log(err)
+    }
+}
+
+or you can do 
+
+const Noblesse = new mangaShema({ title : "Noblesse" , lastChapter : 501 , description : "one day a vampire lord..."})
+
+const saveManga = async (manga){
+    await Noblesse.save()
+}
+si tu veux tu peux meme modifier les object -> 
+
+const saveMange = async(manga) => {
+    try{
+        const dbManga = await Manga.findOne({ title: manga }); // si tu le tire pas de la base de donnée il va essayer d'en creer un autre qui va te causer une duplication (utilise unique true et n'oublei pas le regle modification sur ce que je tire , enregistrement sur ce que je tire pas )
+        dbManga.lastChapter += 1 ;
+        const afterChange = await dbManga.save();
+        console.log(afterChange)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+for create you can also use .save() 
+
+const newManga = new Manga({title : "Cherry Blossoms" , lastChapter : 107 , description : "one day a boy ..."});
+
+const createBySave = async (manga) => {
+    try{
+       const saved =  await  manga.save();
+       console.log(saved)
+    }catch(err){
+        console.log(err)
+    } 
+}
+
+createBySave(newManga);
+
+
+const chapterCount = await Chapter.countDocuments({mangaId})  bildiğin COUNT(chapter) gibi -> 
+
+YOURSCHEMANAME.countDocuments({truc})
+
+YOURSCHEMANAME.findOne({truc}) -> il te trouve ce que tu cherches d'apres le "truc"
+
+foreign keys in mongoose 
+
+-> 
+
+mesela manga ve chapter için 
+
+Manga -> 
+
+const mongoose = require("mongoose");
+
+const newManga = new mongoose.Schema ({
+    title : {type : String , required :true , unique : true},
+    lastChapter : Number,
+    description : String
+})
+
+module.exports = mongoose.model("Manga",newManga)
+
+Chapter -> 
+
+const mongoose = require("mongoose");
+
+const newChapter = new mongoose.Schema({
+    count : Number,
+    pages : [String],
+    mangaId : {
+        type : mongoose.Schema.Type.ObjectId,
+        ref : "Manga"
+    }
+})
+
+module.exports = mongoose.model("Chapter",newChapter);
+
+
+
+-server side 
+
+const addNewChapter = async (title , pages) => {
+    try{
+        const manga = await Manga.findOne({title})
+        const mangaId = manga._id
+
+        const chaptersCount = Chapter.countDocuments({mangaId})
+       
+        
+
+        const newChapter = new Chapter({
+            count : chaptersCount + 1 ,
+            pages,
+            mangaId
+        })
+
+    }catch(err){
+        console.log(err)
+    }
+}
+
+const pages = ["frame1","frame2"]
+addNewChapter("Noblesse",pages)
+
+nested stoklama mümkün 
+
+yani
+
+const mongoose = require("mongoose");
+
+const newManga = new mongoose.Schema ({
+    title : {type : String , required :true , unique : true},
+    lastChapter : Number,
+    description : String,
+    createdAt : [type : Date , default : () => Date.now(), immutable : true ] //immutable değiştirilmez yapıyo işte oynayamıyorsun snradan
+    infoSup : {
+        author : [type : String , lovercase : true],
+        year : Number
+    }
+})
+
+module.exports = mongoose.model("Manga",newManga)
+ 
+Messela yani işe yarar bu arada.
+
+
+findone 1 tane find hepsini buluyo save var create var 
+
+sonracıma where var bildiğin sql ama naısl oluyo 
+
+Chapter.where("count").equals(51); mesela yani  s'il trouve pas il te retorune []   
+
+.exists var ne için mesela
+
+User.exists(userMail); true false gayet iyi kullanıcı zaten var mı kontrolu için fena değil 
+
+şey var .lt() -> lesser than User.Where("salary").lt("500");
+şey var .gt() -> greater than User.Where("salary").gt("2000");
+
+tu peux les enchainer c comme trim().replace();
+
+.limit() -> .limit("2");
+
+.select("title chapterNumber") litteralement select işte 
+.sort({ chapterNumber: -1 }) 10 9 8 7 
+.sort({chapterNumber : 1}) 1 2 3 4 
+
+you can create your own functions 
+
+since its a object you can create your own functions 
+
+with methods you can create fucntions that is special for the one SPECIFIC user which means if you do 
+
+chapterShema.methods.holyInfo = function() {
+    return [this.title , this.lastChapter]
+}
+
+const infos = Noblesse.holyInfo();
+
+console.log(infos) -> [Noblesse, 501] 
+
+veya statics kullanırsın ve sakine this. vb kullanmazsında where atarsıbn
+
+chapterShema.findByCount = function (title,count) {
+    return this.where("title").equals(title).where("count").equals(count);
+}
+
+so for "this" 
+
+methods -> this = one spesific object that you already got from database -> Noblesse
+
+statics -> this = schema itself -> chapterShema;
+
+.query  your own query just for Check something like 
+
+chapterShema.query.isPagesOkey = function () {
+    return this.pages?.length ?? 0 > 0
+}
+
+with .virtual you can do virtual properties liek virtual table its there but its not there too its its a just calculation like -> 
+virtual is like methods but it a VARIABLE so you cant pass him  (just for the set methods and its not really what is a passing argument) a arguments either it can be async  its very good for not control every time pass.lenght> 0 you can just do .pass et return a true false you will just do that 1 time and then life is good 
+
+with virtual you use get and set get for get set for set :D
+
+chapterShema.virtual.isPagesOkay.get(
+    function () {
+
+        return this.pages?.length ?? 0 > 10
+    }
+)
+
+if(Noblesse.isPagesOkay){
+    ...
+}
+
+userSchema.virtual.names.set(
+    function (fullname) {
+        const names = fullname.trim().split("")
+        this.firstname = names[0];
+        this.lastname = names[1];
+    }
+)
+
+AMA HANI YOKTU KANKI PROPOS ARGUMENT FALAN bak böyle yapıyon diret 
+
+Noblesse.names = "CemSah Ozdemirel" bu arada örneği sikeym ama yani yapcak bir şey yok 
+
+
+chapterCount 
+
+btw regex -> new RegExp(username,"i") i for case insensetive but if you dont want just dont write it 
+
+of course you can /cem/i its also a regex but as you see its not dynamic you cant change it 
+
+for mongoose when you wanna search for a dynamic thing which is nearly always the case u use 
+
+new RegExp(username,","i") voila 
+
+bu arada sanitize cok basit biis yapmıyon 
+
+const mongoSanitize = require('express-mongo-sanitize');
+
+
+app.use(mongoSanitize()); yapıyon  yapıştırıyon server.js e BOOm korunmalısnı tabii güzel veri için zod zorunlu
+

@@ -1,0 +1,27 @@
+@import url("./rootColors.css");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.explanation{
+    margin: -1rem 0 0.9rem 0 ;
+}
+.redirection{
+    margin: 2px 0;
+}
+
+.redirectionLink{
+    color: aqua;
+    margin-left: 5px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.redirectionLink:active{
+    color: aqua;
+}
+
+.redirectionLink:hover{
+    color: rgba(0, 255, 255, 0.5);
+    cursor: pointer;
+    transition: 0.5s;
+}

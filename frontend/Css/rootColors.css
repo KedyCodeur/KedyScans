@@ -1,0 +1,7 @@
+:root {
+    --mainBgBlack : #202020;
+    --orangeMain : #ed9121;
+    --whiteText : rgba(245, 245, 245, 0.84);
+    --grayText : rgba(240, 248, 255, 0.637);
+    --hoverOrange :  rgba(255, 166, 0, 0.742);
+}
