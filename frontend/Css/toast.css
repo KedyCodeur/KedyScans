@@ -1,0 +1,93 @@
+@import url("./rootColors.css");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.toast-outside-container{
+    background: var(--toastBackgroundColor);
+    display: flex;
+    flex-direction: column;
+    width: clamp(200px,10vw + 20rem,450px);
+    min-height: 5rem;
+    height: fit-content;
+    max-width: 90%;
+    position: absolute;
+    top: var(--hideTopPourcentage);
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    border: 1px solid rgba(240, 248, 255, 0.295);
+}
+
+.toast-inside-container{
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    flex-grow: 1;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem ;
+
+
+}
+
+.toastBar{
+    height: 3px;
+    background-color: var(--toastColor);
+    border-radius: 0 0 5px 5px;
+    margin-top: auto;
+    width: 0%;
+    
+}
+
+.toast-icon{
+    color: var(--toastColor);
+    font-size: 30px !important;
+}
+
+.toast-success{
+    --toastColor : var(--toastColorSuccess);
+    --toastBackgroundColor : var(--toastBackgroundSuccess);
+    --hideTopPourcentage : 5%;
+    transition: top 1s;
+}
+
+.toast-error{
+    --toastColor : var(--toastColorError);
+    --toastBackgroundColor : var(--toastBackgroundError);
+    --hideTopPourcentage : 5%;
+    transition: top 1s;
+
+}
+
+.toast-base{
+    --toastColor : var(--toastColorBase);
+    --toastBackgroundColor : var(--toastBackgroundBase);
+    --hideTopPourcentage : -20%;
+    
+
+}
+
+
+.toast-success .toastBar,
+.toast-error .toastBar {
+    width: 100%; 
+    
+    transition: width 3s , top 3s;
+}
+
+
+.toast-title{
+    color: whitesmoke;
+    font-size: clamp(10px , 3vw + 2px , 13px);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    margin-bottom: 3px;
+    
+}
+.toast-explanation{
+    color: var(--grayText);
+    font-size: clamp(10px , 3vw + 1px , 12px);
+    font-family: "Roboto", monospace;
+   
+    
+}
+

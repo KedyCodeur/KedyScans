@@ -21,7 +21,7 @@
 
         
 
-        <form action="" method="POST" class="input-container">
+        <form  method="POST" class="input-container">
 
                 <img src="./Assets/Images/logoWithOutBg.png" alt="Logo Of KedyScans" class="logo" draggable="false">
                 
@@ -33,24 +33,23 @@
                 <div class="aligner">
                     <label for="email">
                         <span>Email address</span>
-                        <div class="input-holder">
-                            <input type="text" name="email" id="email" autocomplete="email" autocapitalize="false" placeholder="Enter your email">
-                        </div>
+                        <span class="input-holder">
+                            <input type="email" name="email" id="email" autocomplete="email" autocapitalize="off" placeholder="Enter your email" required>
+                        </span>
                     </label>
                 </div>
                 
                 <div class="aligner">
                     <label for="password">
                         <span>Password</span>
-                        <div class="input-holder">
-                            <input type="password" name="password" id="password" autocomplete="current-password" autocapitalize="false" placeholder="Enter your password" >
+                        <span class="input-holder">
+                            <input type="password" name="password" id="password" autocomplete="current-password" autocapitalize="off" placeholder="Enter your password" minlength="6" required>
                             
-                        </div>
+                        </span>
                     </label>
                 </div>
 
                 <div class="aligner rememberMe">
-                   
                         <span>Remember Me</span>
                         <input type="checkbox" value="true" id="rememberMe" name="rememberMe">
                         <label for="rememberMe" class="customCheckBox"></label>
@@ -63,7 +62,7 @@
         </form>
 
         <div class="image-container">
-            <img src="./Assets/Images/unnamed.jpeg" alt="Logo of the KedyScans" class="wallpaper">
+            <img src="./Assets/Images/unnamed.jpeg" alt="Logo of the KedyScans" class="wallpaper" draggable="false">
         </div>
         
 

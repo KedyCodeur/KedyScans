@@ -1,7 +1,24 @@
 :root {
+    --grayBlack : #333;
     --mainBgBlack : #202020;
     --orangeMain : #ed9121;
     --whiteText : rgba(245, 245, 245, 0.84);
     --grayText : rgba(240, 248, 255, 0.637);
     --hoverOrange :  rgba(255, 166, 0, 0.742);
+    --mixedBlackLinear : radial-gradient(circle, #141414 40%, black 100%);
+    
+    --toastBackgroundColor : rgba(0, 128, 0, 0.226);
+    --toastColor : rgb(9, 148, 9);
+
+    --toastColorSuccess : rgb(9, 148, 9);
+    --toastColorError : tomato;
+    
+    --toastBackgroundSuccess : rgba(0, 128, 0, 0.226);
+    --toastBackgroundError : rgba(128, 0, 0, 0.315);
+
+    --toastColorBase :#888787 ;
+    --toastBackgroundBase : rgba(1, 19, 1, 0.61);
+
+    --hideTopPourcentage : -20%
+    
 }
