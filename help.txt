@@ -28,3 +28,7 @@ Editor font
 rgba(245, 245, 245, 0.774); whiteText
 
 background-color:#333; input black
+
+
+<span class="material-symbols-outlined" style="color:#22c55e;">check_circle</span>
+<span class="material-symbols-outlined" style="color:#ef4444;">cancel</span>

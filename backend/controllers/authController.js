@@ -9,8 +9,9 @@ const registerSchema = z.object({
         .trim()
         .email("Please provide a valid email address.")
         .refine((val) => !/\p{Extended_Pictographic}/u.test(val), {
-            message: "Emojis are not allowed in passwords.",
+            message: "Emojis are not allowed in email.",
         })
+        .toLowerCase()    
     
     ,
     
@@ -24,6 +25,7 @@ const registerSchema = z.object({
 });
 
 const register = async (req,res) => {
+
     const result = registerSchema.parse(req.body)
 
 
@@ -31,10 +33,9 @@ const register = async (req,res) => {
     const email = result.email;
 
     const newUser = new User({email : email ,password : password})
- 
     const user = await newUser.save();
     console.log(user);
-    res.status(201).json({success : "User created succesfully"})
-}
+    res.status(201).json({success : true , message : "User created successfully"})
+}   
 
 module.exports = {register}

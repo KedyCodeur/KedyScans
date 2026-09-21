@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
     username : {type : String},
     password : {type : String , required : true },
     roles : {type : [String] , default : ["User"]},
-    tag : {type : String}
-
+    tag : {type : String},
+    isActivated : {type : Boolean , default : false}
 })
 
 userSchema.index({ username: 1, tag: 1 }, { unique: true });

@@ -23,7 +23,7 @@ const MangasSchema = new mongoose.Shema({
     
 })
 
-en mongoose la creation des tables sont fait par nous meme pas eux . ça veut dire tout se passe sur notre NODE JS  les connards ne veulent pas utiliser leur ram pour nous donc 
+en mongoose la creation des tables sont fait par nous meme pas eux . ça veut dire que tout se passe sur notre NODE JS  les connards ne veulent pas utiliser leur ram pour nous donc 
 creation des shemas  validation controles des données se passent sur notre serveur ce qu'ils font c de juste verifier qu'on changer pas la table (schema) sans supprimer les autres donné donc du moment qu'on crée pas un atre table avec le meme nom ils se foutent de nous :D 
 
 

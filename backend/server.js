@@ -11,7 +11,11 @@ const PORT = process.env.PORT || 3000;
 
 
 
-app.use(cors()); 
+app.use(cors({
+    origin: process.env.CLIENT_URL, 
+    credentials: true 
+}));
+
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('Public'));
@@ -24,7 +28,7 @@ app.use("/auth",AuthRouter)
 app.use((err,req,res,next)=>{
     if(err.name === "ZodError"){
         res.status(400).json({success : false , e : "Invalid Request"})
-    }
+    }   
     else if(err.code === 11000){
         const field = Object.keys(err.keyValue)[0]
         const capitalizedField = field.charAt(0).toUpperCase() + field.slice(1);
