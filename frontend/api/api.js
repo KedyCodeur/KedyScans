@@ -27,7 +27,7 @@ async function api(endpoint,options = {},data) {
     
     let request = await fetch(`${BASE_URL}${endpoint}`,fetchOptions)
     
-    if(request.status == 401){
+    if(request.status == 401 && options.askForRefresh === true){
 
         const isRefreshed = await refresh();
 
