@@ -42,6 +42,9 @@ app.use((err,req,res,next)=>{
     else if(err.code === 401){
         res.status(401).json({success : false , e:"Invalid Credentials"})
     }
+    else if(err.code === 403 ){
+        res.status(403).json({success : false , e:"Forbbidden Access"})
+    }
     else{
         res.status(500).json({success:false , e : "Internal Server Error"})
     }

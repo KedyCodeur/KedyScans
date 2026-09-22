@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt")
 const User = require("../models/User");
 
+const resend = require("../config/resend");
+
 
 const registerSchema = z.object({
     email: z
@@ -47,7 +49,7 @@ const tokenHash = (token) =>{
 const signAccessToken = async (data) =>{
 
     const accessToken = jwt.sign(
-        {roles : data.roles , userID : data.userID},
+        {roles : data.roles , userID : data.userID , isActivated : isActivated},
         process.env.ACCESS_SECRET,
         {expiresIn : "15m"}
     );
@@ -60,7 +62,7 @@ const signRefreshToken = async (data) => {
     const ttlSeconds = data.rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
 
     const refreshToken = jwt.sign(
-        {roles : data.roles , userID : data.userID},
+        {roles : data.roles , userID : data.userID , isActivated : isActivated},
         process.env.REFRESH_SECRET,
         {expiresIn :ttlSeconds}
     );
@@ -113,8 +115,16 @@ const login = async (req,res) => {
         const match = await bcrypt.compare(password,user.password)
         
         if(match){
+
+            const isActivated = user.isActivated;
+
+            if(!isActivated){
+                const err = new Error("Email not verified");
+                err.code = 403;
+                throw err;               
+            }
             
-            const data = {roles : user.roles , userID : user._id,rememberMe : rememberMe}
+            const data = {roles : user.roles , userID : user._id,rememberMe : rememberMe , isActivated : isActivated}
 
             const existingRefreshToken = req.cookies?.refreshToken;
            
@@ -150,7 +160,7 @@ const login = async (req,res) => {
             res.status(200).json({
                 success: true,
                 message: "Logged in successfully",
-                userID: data.userID
+                roles : user.roles
             });
         }else{
             const err = new Error("Invalid Credentials");
@@ -232,4 +242,15 @@ const loginAdmin = async (req,res) => {
     }
     
 }
-module.exports = { register, signAccessToken, signRefreshToken, login };
+
+
+const verifyEmail = async (req,res) => {
+    resend.emails.send({
+        from : "bomba@gmail.com",
+        to : "cemsahozdemirel791@gmail.com",
+        subject : "hmm",
+        html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+
+    })
+}
+module.exports = { register, signAccessToken, signRefreshToken, login, verifyEmail};
