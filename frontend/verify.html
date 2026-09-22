@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify | KedyScans </title>
+  
+    <link rel="icon" type="image/x-icon" href="./Assets/Images/logo.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="stylesheet" href="./Css/verify.css">
+    <link rel="stylesheet" href="./Css/toast.css">
+
+    <meta name="author" content="KedyCodeur">
+    <meta name="description" content="Read your favorite manga online for free. Explore a vast collection of high-quality manga chapters, latest releases, and popular series.">
+    <meta name="keywords" content="manga, read manga, free manga, manga online, latest manga chapters, KedyCodeur">
+    <meta name="robots" content="index, follow">
+
+</head>
+<body>
+    <main class="verify-container">
+
+        
+    <form  method="POST">
+            
+    <span class="material-symbols-outlined email-icon">forward_to_inbox</span>
+        <h1>Verify your email</h1>
+        <p class="text">We have sent your email to <span class="email">your***@gmail.com</span></p>
+        <div class="input-container">
+            <input type="text" maxlength="1" id="character1" name="character1" aria-label="character 1 of verification code" class="char"/>
+            <input type="text" maxlength="1" id="character2" name="character" aria-label="character 2 of verification code" class="char"/>
+            <input type="text" maxlength="1" id="character3" name="character3" aria-label="character 3 of verification code" class="char"/>
+            <input type="text" maxlength="1" id="character4" name="character4" aria-label="character 4 of verification code" class="char"/>
+            <input type="text" maxlength="1" id="character5" name="character5" aria-label="character 5 of verification code" class="char"/>
+            <input type="text" maxlength="1" id="character6" name="character6" aria-label="character 6 of verification code" class="char"/>
+        </div>
+
+        
+
+        <button type="submit" class="submit-button">Verify</button>   
+        <p class="resendText">Didn't get it? <span class="resend-span">Resend code</span></p>
+    </form>
+
+    </main>
+    <holy-toaster></holy-toaster>
+    <script  src="./Components/Toaster.js"></script>
+    <script  type="module" src="./Js/verify.js"></script>
+</body>
+
+</html>

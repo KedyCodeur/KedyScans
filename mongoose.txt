@@ -283,3 +283,5 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 app.use(mongoSanitize()); yapıyon  yapıştırıyon server.js e BOOm korunmalısnı tabii güzel veri için zod zorunlu
 
+    font-family: "Montserrat", sans-serif;
+     font-family: "Roboto", monospace;

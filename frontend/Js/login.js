@@ -22,23 +22,37 @@ const handleLogin = async (data) =>{
             title: "Login",
             explanation: "It's a pleasure to have you with us!"
         });
+  
 
+        const adminRoles = ["Admin"];
+        const userRoles = response.roles
+
+        const isAdmin = userRoles.some(rol => adminRoles.includes(rol));
+        const path = isAdmin ?  "adminPanel.html" : "index.html";
+        
         setTimeout(()=>{
-            window.location.href = "index.html";
-        },3200)
+            window.location.href = path;
+        },3000)
         
     }catch(e){
-        const status = "Error";
+        let status = "Error";
         let title;
         let explanation;
+        let isActivated = true;
         switch(e.status){
-            case 401: 
+            case 401:
                 title = "Identity Crisis? 🤔";
                 explanation = "Either you forgot your credentials, or you're an imposter. Which one is it?";
                 break;
             case 400 :
                 title = "Invalid Data";
                 explanation = "Hmm looks like you are trying something ?";
+                break;
+            case 403: 
+             status = "Warning"
+                title = "Account Not Verified";
+                explanation = "You must verify your account. You will be redirected in 3 seconds.";
+                isActivated = false
                 break;
             default :
                 title = "Connection Error"
@@ -51,7 +65,12 @@ const handleLogin = async (data) =>{
             title,
             explanation
         });
-    
+        
+        if(!isActivated){
+            setTimeout(()=>{
+                window.location.href = "verify.html";
+            },3000)            
+        }
     }
 }
 form.addEventListener("submit",(e)=>{

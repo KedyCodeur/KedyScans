@@ -37,7 +37,7 @@
                     <label for="email">
                         <span>Email address</span>
                         <span class="input-holder">
-                            <input type="email" name="email" id="email" autocomplete="email" autocapitalize="off" placeholder="Enter your email" required>
+                            <input type="email" name="email" id="email" autocomplete="email" autocapitalize="off" placeholder="Enter your email" required aria-label="Email address">
                         </span>
                     </label>
                 </div>
@@ -46,7 +46,7 @@
                     <label for="password">
                         <span>Password</span>
                         <span class="input-holder">
-                            <input type="password" name="password" id="password" autocomplete="current-password" autocapitalize="off" placeholder="Enter your password" minlength="6" required>
+                            <input type="password" name="password" id="password" autocomplete="current-password" autocapitalize="off" placeholder="Enter your password" minlength="6" required aria-label="Password">
                             
                         </span>
                     </label>
@@ -55,8 +55,8 @@
                 <div class="aligner rememberMe">
                    
                         <span>Remember Me</span>
-                        <input type="checkbox" value="true" id="rememberMe" name="rememberMe">
-                        <label for="rememberMe" class="customCheckBox"></label>
+                        <input type="checkbox" value="true" id="rememberMe" name="rememberMe" aria-label="Remember Me">
+                        <label for="rememberMe" class="customCheckBox" ></label>
                         <p class="redirection">New here?<a href="./register.html" class="redirectionLink">Sign in</a></p>
                 </div>
 

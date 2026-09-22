@@ -33,7 +33,7 @@ class Toaster extends  HTMLElement{
            
        };
 
-       this.toastContainer.classList.remove("toast-error", "toast-success");
+       this.toastContainer.classList.remove("toast-error", "toast-success","toast-warning");
        this.toastContainer.classList.add("toast-base");
     
        this.toastIcon.textContent  = "cancel";
@@ -43,7 +43,7 @@ class Toaster extends  HTMLElement{
 
     toast({status,title,explanation}){
         this.resetToast();
-        this.toastContainer.classList.remove("toast-success", "toast-error", "toast-base");
+        this.toastContainer.classList.remove("toast-success", "toast-error", "toast-base","toast-warning");
 
        requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -54,6 +54,9 @@ class Toaster extends  HTMLElement{
             } else if (status.toLowerCase() === "error") {
                 this.toastContainer.classList.add("toast-error");
                 this.toastIcon.innerHTML = "cancel";
+            } else if (status.toLowerCase() === "warning") {
+                this.toastContainer.classList.add("toast-warning");
+                this.toastIcon.innerHTML = "warning";
             }
 
             this.toastTitle.textContent = title;

@@ -42,6 +42,11 @@
     color: var(--toastColor);
     font-size: 30px !important;
 }
+.toast-base{
+    --toastColor : var(--toastColorBase);
+    --toastBackgroundColor : var(--toastBackgroundBase);
+    --hideTopPourcentage : -20%;
+}
 
 .toast-success{
     --toastColor : var(--toastColorSuccess);
@@ -57,18 +62,18 @@
     transition: top 1s;
 
 }
-
-.toast-base{
-    --toastColor : var(--toastColorBase);
-    --toastBackgroundColor : var(--toastBackgroundBase);
-    --hideTopPourcentage : -20%;
-    
-
+.toast-warning{
+    --toastColor : var(--toastColorWarning);
+    --toastBackgroundColor : var(--toastBackgroundWarning);
+    --hideTopPourcentage : 5%;
+    transition: top 1s;
 }
 
 
+
 .toast-success .toastBar,
-.toast-error .toastBar {
+.toast-error .toastBar,
+.toast-warning .toastBar {
     width: 100%; 
     
     transition: width 3s , top 3s;

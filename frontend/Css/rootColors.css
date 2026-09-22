@@ -7,14 +7,18 @@
     --hoverOrange :  rgba(255, 166, 0, 0.742);
     --mixedBlackLinear : radial-gradient(circle, #141414 40%, black 100%);
     
+   /*Toaster */
+
     --toastBackgroundColor : rgba(0, 128, 0, 0.226);
     --toastColor : rgb(9, 148, 9);
 
     --toastColorSuccess : rgb(9, 148, 9);
     --toastColorError : tomato;
-    
+    --toastColorWarning : rgba(255, 255, 0, 0.781);
+
     --toastBackgroundSuccess : rgba(0, 128, 0, 0.226);
     --toastBackgroundError : rgba(128, 0, 0, 0.315);
+    --toastBackgroundWarning : rgba(255, 187, 0, 0.185);
 
     --toastColorBase :#888787 ;
     --toastBackgroundBase : rgba(1, 19, 1, 0.61);

@@ -32,3 +32,8 @@ background-color:#333; input black
 
 <span class="material-symbols-outlined" style="color:#22c55e;">check_circle</span>
 <span class="material-symbols-outlined" style="color:#ef4444;">cancel</span>
+
+yeni token vermen lazım verify ettikten sorma yoksa eski ref ve access kalırsa adam hesabını kullanamaz bir sonraki logine kadar
+
+    font-family: "Montserrat", sans-serif;
+     font-family: "Roboto", monospace;
