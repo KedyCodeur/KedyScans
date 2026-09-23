@@ -46,14 +46,14 @@ const tokenHash = (token) =>{
     return crypto.createHash('sha256').update(token).digest('hex');
 }
 
-const signAccessToken = async (data) =>{
+const signAccessToken =  (data) =>{
 
     const accessToken = jwt.sign(
-        {roles : data.roles , userID : data.userID , isActivated : isActivated},
+        {roles : data.roles , userID : data.userID , isActivated : data.isActivated},
         process.env.ACCESS_SECRET,
         {expiresIn : "15m"}
     );
-
+    
     return accessToken;
 }
 
@@ -62,7 +62,7 @@ const signRefreshToken = async (data) => {
     const ttlSeconds = data.rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
 
     const refreshToken = jwt.sign(
-        {roles : data.roles , userID : data.userID , isActivated : isActivated},
+        {roles : data.roles , userID : data.userID , isActivated : data.isActivated , rememberMe : data.rememberMe},
         process.env.REFRESH_SECRET,
         {expiresIn :ttlSeconds}
     );
@@ -118,32 +118,36 @@ const login = async (req,res) => {
 
             const isActivated = user.isActivated;
 
-            if(!isActivated){
-                const err = new Error("Email not verified");
-                err.code = 403;
-                throw err;               
-            }
+
             
             const data = {roles : user.roles , userID : user._id,rememberMe : rememberMe , isActivated : isActivated}
 
+         
             const existingRefreshToken = req.cookies?.refreshToken;
            
             if(existingRefreshToken){
                 const hashedOldRefresh = tokenHash(existingRefreshToken);
                 const key = `user:${data.userID}-refresh:${hashedOldRefresh}`;
 
-                const exists = await redis.exists(key) ;
-                if(exists){
-                    await redis.unlink(key);
-                }
+                await redis.unlink(key);
+          
             }
 
+            
             
             
             const refreshToken = await signRefreshToken(data);
             const accessToken = await signAccessToken(data);
             
 
+            const hashedNewRefresh = tokenHash(refreshToken);
+            const newRedisKey = `user:${data.userID}-refresh:${hashedNewRefresh}`;
+
+            
+            const ttl = data.rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24; 
+            await redis.set(newRedisKey, "valid", { ex: ttl });
+       
+            
             res.cookie("refreshToken",refreshToken,{
                 httpOnly : true,
                 secure : process.env.NODE_ENV === "production",
@@ -156,11 +160,11 @@ const login = async (req,res) => {
                 sameSite : "strict",
                 maxAge: 15 * 60 * 1000
             }) 
-
             res.status(200).json({
                 success: true,
                 message: "Logged in successfully",
-                roles : user.roles
+                roles : user.roles,
+                isActivated : user.isActivated
             });
         }else{
             const err = new Error("Invalid Credentials");
@@ -175,82 +179,121 @@ const login = async (req,res) => {
     }
     
 }
+const handleRefresh = async (req,res) => {
+    
+    const token =  req.cookies.refreshToken;
 
-const loginAdmin = async (req,res) => {
-    const result = loginSchema.parse(req.body)
-
-    const password = result.password;
-    const email = result.email;
-    const rememberMe = result.rememberMe;
-
-
-    const user = await User.findOne({email : email});
-
-    if(user){
-        const match = await bcrypt.compare(password,user.password)
-        
-        if(match){
-            
-            const data = {roles : user.roles , userID : user._id,rememberMe : rememberMe}
-
-            const existingRefreshToken = req.cookies?.refreshToken;
+    if (!token) {
            
-            if(existingRefreshToken){
-                const hashedOldRefresh = tokenHash(existingRefreshToken);
-                const key = `user:${data.userID}-refresh:${hashedOldRefresh}`;
-
-                const exists = await redis.exists(key) ;
-                if(exists){
-                    await redis.unlink(key);
-                }
-            }
-
-            
-            
-            const refreshToken = await signRefreshToken(data);
-            const accessToken = await signAccessToken(data);
-            
-
-            res.cookie("refreshToken",refreshToken,{
-                httpOnly : true,
-                secure : process.env.NODE_ENV === "production",
-                sameSite : "strict",
-                ...(data.rememberMe && { maxAge: 60 * 60 * 24 * 7 * 1000 })
-            })
-            res.cookie("accessToken",accessToken,{
-                httpOnly : true,
-                secure : process.env.NODE_ENV === "production",
-                sameSite : "strict",
-                maxAge: 15 * 60 * 1000
-            }) 
-
-            res.status(200).json({
-                success: true,
-                message: "Logged in successfully",
-                userID: data.userID
-            });
-        }else{
             const err = new Error("Invalid Credentials");
             err.code = 401;
             throw err;
-        }
-
-    }else{
-        const err = new Error("Invalid Credentials");
-        err.code = 401;
-        throw err;
     }
     
+    try {
+        const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
+
+        try{
+            
+            const hashedRefreshToken = tokenHash(token);
+
+            const redisKey =`user:${decoded.userID}-refresh:${hashedRefreshToken}`
+            
+            const deletedIfExists = await redis.unlink(redisKey);
+
+            if (deletedIfExists === 0) {
+   
+                const err = new Error("Invalid Credentials");
+                err.code = 401;
+                throw err;
+            }
+            
+        }catch (e) {
+            return res.status(503).json({success : false , e:"Service Unavailable"})
+            
+        }  
+
+       
+        const data = {roles :decoded.roles, userID : decoded.userID,isActivated : decoded.isActivated , rememberMe : decoded.rememberMe};
+
+        const accessToken = signAccessToken(data);
+        const refreshToken = await signRefreshToken(data);
+
+        res.cookie("refreshToken",refreshToken,{
+            httpOnly : true,
+            secure : process.env.NODE_ENV === "production",
+            sameSite : "strict",
+            ...(data.rememberMe && { maxAge: 60 * 60 * 24 * 7 * 1000 })
+        })
+        res.cookie("accessToken",accessToken,{
+            httpOnly : true,
+            secure : process.env.NODE_ENV === "production",
+            sameSite : "strict",
+            maxAge: 15 * 60 * 1000
+        }) 
+
+        res.status(200).json({
+            success: true,
+            message: "Refresh Successfujl",
+
+        });        
+    } catch (e) {
+            const err = new Error("Invalid Credentials");
+            err.code = 401;
+            throw err;
+            
+    }    
 }
 
+const verifySchema = z.object({
+    code : z.string().trim().length(6)
+})
+
+const sendVerifyCode = async (req,res) => {
+   
+    const code = crypto.randomBytes(3).toString('hex').slice(0, 6).toUpperCase();
+    
+
+    const userID = req.tokenInfo?.userID || "";
+
+    const user =  await User.findOne({ _id: userID }).select('email');
+
+    if (!user?.email) {
+            const err = new Error("User Not found");
+            err.code = 404; 
+            throw err;    
+    }   
+
+    const email = user.email;
+
+    const redisKey = `verifyCode$userID:${userID}`
+
+    await redis.unlink(redisKey);
+
+    
+
+    try {
+        const resendRequest = await resend.emails.send({
+            from: 'Kedyscans <noreply@kedyscans.world>',
+            to: email,
+            subject: 'Doğrulama Kodunuz',
+            html: `<p>Kodunuz: ${code}</p>`
+        });
+
+        await redis.set(redisKey, code, { ex: 300 });
+
+    } catch (error) {
+        const err = new Error("Failed to send email. Please try again later.");
+        err.code = 502; 
+        throw err;
+    }   
+
+    res.status(200).json({ success: true, message: "Email has been sent" });
+   
+}
 
 const verifyEmail = async (req,res) => {
-    resend.emails.send({
-        from : "bomba@gmail.com",
-        to : "cemsahozdemirel791@gmail.com",
-        subject : "hmm",
-        html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
-
-    })
+    const result = verifySchema.parse(req.body)
+    const code = 1
 }
-module.exports = { register, signAccessToken, signRefreshToken, login, verifyEmail};
+module.exports = { register, signAccessToken, signRefreshToken, login, verifyEmail,sendVerifyCode , handleRefresh};
